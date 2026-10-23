@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>N3 Daily Reading</title>
+<style>
+:root{--bg:#faf7f2;--card:#fff;--text:#2b2622;--muted:#7a6f66;--line:#e6ddd2;--accent:#c2553b;--chip:#f3ece3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1815;--card:#26221e;--text:#efe8e0;--muted:#a79b90;--line:#3a342e;--accent:#e8836a;--chip:#322c26}}
+:root[data-theme="dark"]{--bg:#1b1815;--card:#26221e;--text:#efe8e0;--muted:#a79b90;--line:#3a342e;--accent:#e8836a;--chip:#322c26}
+html{color-scheme:light dark;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",system-ui,sans-serif;line-height:1.7}
+main{max-width:640px;margin:0 auto;padding:16px}
+h1{font-size:1.3rem;margin:8px 0 4px}
+.sub{color:var(--muted);font-size:.85rem;margin:0 0 12px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:999px;padding:6px 14px;cursor:pointer}
+button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+article{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+h2{font-size:1.05rem;margin:0}
+h2 span{color:var(--accent);margin-right:6px}
+.star{border:none;background:none;font-size:1.4rem;padding:0 4px;color:var(--muted)}
+.star.on{color:#e0a100;background:none}
+.jp{font-size:1.05rem;line-height:2.1;margin:8px 0}
+ruby rt{font-size:.55em;color:var(--muted)}
+.noruby rt{display:none}
+.g{font-size:.8rem;color:var(--muted);background:var(--chip);border-radius:8px;padding:6px 10px;margin:6px 0}
+details summary{cursor:pointer;color:var(--accent);font-size:.9rem}
+details p{margin:6px 0 0;font-size:.9rem;font-family:system-ui,sans-serif}
+.gp{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:2px 8px;margin:3px 4px 3px 0;font-size:.8rem;line-height:1.9}
+.gp.on rt{color:#fff}
+.gp0{display:inline-block;margin-right:8px}
+.gd{margin-top:6px;color:var(--text);line-height:1.9;font-size:.9rem}
+.gd:empty{display:none}
+.gd i{color:var(--muted);font-family:system-ui,sans-serif;font-size:.85rem}
+.empty{text-align:center;color:var(--muted);padding:30px 0}
+</style>
+</head>
+<body>
+<main>
+<h1>N3 Daily Reading</h1>
+<p class="sub">50 short everyday articles · tap a grammar point for its meaning and an example</p>
+<div class="bar">
+<button id="fu" class="on">Furigana</button>
+<button id="fav">★ Favorites only</button>
+</div>
+<div id="list"></div>
+</main>
+<script>
+const D=[
+[`朝(あさ)のルーティン`,`朝(あさ)はできるだけ早(はや)く起(お)きるようにしています。起(お)きたらまず、コーヒーを飲(の)みながら今日(きょう)の予定(よてい)を確認(かくにん)します。以前(いぜん)は寝坊(ねぼう)してばかりいましたが、最近(さいきん)は朝(あさ)の時間(じかん)を大切(たいせつ)にするようになりました。でも、昨日(きのう)は疲(つか)れていて、うっかり寝坊(ねぼう)してしまいました。`,`～ようにしている / ～ながら / ～てばかり / ～ようになる / ～てしまう`,`I try to wake up as early as possible. When I get up, I first check today’s schedule while drinking coffee. I used to do nothing but oversleep, but recently I’ve come to value my mornings. Yesterday, though, I was tired and carelessly overslept.`],
+[`週末(しゅうまつ)の料理(りょうり)`,`週末(しゅうまつ)に、一週間分(いっしゅうかんぶん)のおかずを作(つく)っておきます。先週(せんしゅう)、新(あたら)しいレシピで鶏肉(とりにく)を焼(や)いたところ、味(あじ)が濃(こ)すぎてしまいました。説明(せつめい)どおりに作(つく)ったはずなのに、不思議(ふしぎ)です。次(つぎ)は塩(しお)を少(すこ)し減(へ)らしてみようと思(おも)います。`,`～ておく / ～たところ / ～すぎる / ～どおりに / ～はずなのに`,`On weekends I prepare a week’s worth of side dishes in advance. Last week, when I grilled chicken with a new recipe, the flavor turned out too strong. I should have followed the instructions exactly, so it’s strange. Next time I’ll try reducing the salt a little.`],
+[`通勤(つうきん)`,`電車(でんしゃ)が遅(おく)れたせいで、会社(かいしゃ)に遅刻(ちこく)しそうになりました。今朝(けさ)は事故(じこ)があったようで、駅(えき)がとても混(こ)んでいました。それで、これからは少(すこ)し早(はや)めに家(いえ)を出(で)ることにしました。早(はや)く着(つ)けば、会社(かいしゃ)の近(ちか)くでゆっくり朝食(ちょうしょく)を食(た)べられます。`,`～せいで / ～そうになる / ～ようだ / ～ことにする / ～ば`,`Because the train was delayed, I almost arrived late to work. There seems to have been an accident this morning, and the station was very crowded. So from now on I decided to leave home a bit earlier. If I arrive early, I can eat breakfast leisurely near the office.`],
+[`買(か)い物(もの)`,`スーパーへ行(い)くついでに、隣(となり)の薬局(やっきょく)にも寄(よ)りました。最近(さいきん)は野菜(やさい)の値段(ねだん)が高(たか)いらしく、レタスが先月(せんげつ)に比(くら)べて二倍(にばい)になっていました。店員(てんいん)さんに安(やす)い野菜(やさい)を教(おし)えてもらい、代(か)わりにキャベツを買(か)いました。`,`～ついでに / ～らしい / ～に比(くら)べて / ～てもらう / 代(か)わりに`,`On my way to the supermarket, I also stopped by the pharmacy next door. Vegetable prices seem to be high lately; lettuce had doubled compared to last month. A staff member told me about cheaper vegetables, so I bought cabbage instead.`],
+[`雨(あめ)の日(ひ)`,`天気予報(てんきよほう)によると、明日(あした)は一日中(いちにちじゅう)雨(あめ)が降(ふ)るそうです。傘(かさ)を忘(わす)れないように、玄関(げんかん)に出(だ)しておきました。雨(あめ)の日(ひ)は外(そと)に出(で)るのが面倒(めんどう)ですが、家(いえ)で本(ほん)を読(よ)むのも悪(わる)くありません。`,`～によると～そうだ / ～ないように / ～ておく / ～のも悪(わる)くない`,`According to the weather forecast, it will rain all day tomorrow. So I won’t forget my umbrella, I set it out by the front door. Going out on rainy days is a hassle, but reading at home isn’t bad either.`],
+[`友達(ともだち)との約束(やくそく)`,`来週(らいしゅう)、大学(だいがく)時代(じだい)の友達(ともだち)と食事(しょくじ)することになりました。普段(ふだん)よく連絡(れんらく)しているわけではありませんが、会(あ)えばすぐ昔(むかし)のように話(はな)せます。話(はな)したいことがたくさんあるので、きっと時間(じかん)が足(た)りないでしょう。お店(みせ)は私(わたし)が予約(よやく)することになっています。`,`～ことになる / ～わけではない / ～ば / ～のように / ～ことになっている`,`It’s been decided that I’ll have a meal with friends from my university days next week. It’s not that we’re in regular contact, but when we meet, we can talk right away like old times. We have so much to talk about that time will surely run short. It’s arranged that I’ll make the restaurant reservation.`],
+[`夜(よる)の散歩(さんぽ)`,`先月(せんげつ)から、毎晩(まいばん)三十分(さんじゅっぷん)歩(ある)くようになりました。歩(ある)けば歩(ある)くほど、気分(きぶん)がすっきりします。最初(さいしょ)は続(つづ)けられるか心配(しんぱい)でしたが、音楽(おんがく)を聞(き)きながら歩(ある)くと、時間(じかん)があっという間(ま)に過(す)ぎます。雨(あめ)の日(ひ)は休(やす)みがちですが、無理(むり)をしないことにしています。`,`～ようになる / ～ば～ほど / ～か心配(しんぱい) / ～がち / ～ことにしている`,`Since last month, I’ve started walking thirty minutes every night. The more I walk, the more refreshed I feel. At first I was worried whether I could keep it up, but when I walk while listening to music, time passes in a flash. I tend to skip rainy days, but I make a point of not overdoing it.`],
+[`部屋(へや)の掃除(そうじ)`,`部屋(へや)を掃除(そうじ)しようと思(おも)っていたところに、母(はは)から電話(でんわ)がありました。掃除(そうじ)するたびに、使(つか)っていない物(もの)がたくさん出(で)てきて驚(おどろ)きます。思(おも)い切(き)って、いらない服(ふく)や本(ほん)を捨(す)てることにしました。部屋(へや)が広(ひろ)くなって、気持(きも)ちもすっきりしました。`,`～ようと思(おも)っていたところ / ～たびに / 思(おも)い切(き)って / ～ことにする`,`Just as I was thinking of cleaning my room, I got a phone call from my mother. Every time I clean, lots of things I don’t use turn up, which surprises me. I made up my mind and decided to throw away unneeded clothes and books. The room became more spacious, and I felt refreshed too.`],
+[`旅行(りょこう)の計画(けいかく)`,`今度(こんど)の連休(れんきゅう)に、京都(きょうと)へ旅行(りょこう)に行(い)くつもりです。ホテルは早(はや)めに予約(よやく)するべきだと友達(ともだち)に言(い)われたので、昨日(きのう)のうちに探(さが)しました。観光地(かんこうち)は混(こ)むかもしれませんが、せっかく行(い)くのだから、有名(ゆうめい)なお寺(てら)を見(み)てみたいです。`,`～つもり / ～べきだ / ～うちに / ～かもしれない / せっかく～のだから`,`I plan to take a trip to Kyoto during the coming long weekend. My friend told me I should book a hotel early, so I searched for one yesterday. Tourist spots may be crowded, but since I’m going all that way, I want to see the famous temples.`],
+[`寝(ね)る前(まえ)の習慣(しゅうかん)`,`最近(さいきん)、寝(ね)る前(まえ)にスマートフォンを見(み)すぎるせいか、なかなか眠(ねむ)れません。そこで、夜(よる)十時(じゅうじ)以降(いこう)は画面(がめん)を見(み)ないようにしてみました。そのおかげで、前(まえ)よりぐっすり眠(ねむ)れるようになりました。眠(ねむ)る前(まえ)に本(ほん)を読(よ)むのが、今(いま)の楽(たの)しみです。`,`～せいか / なかなか～ない / ～ないようにする / ～おかげで / ～ようになる`,`Maybe because I look at my smartphone too much before bed, I can’t fall asleep easily these days. So I tried not looking at the screen after 10 p.m. Thanks to that, I’ve become able to sleep more soundly than before. Reading a book before sleep is my current pleasure.`],
+[`新(あたら)しいカフェ`,`駅(えき)の近(ちか)くに新(あたら)しいカフェができました。コーヒーがおいしい上(うえ)に、店(みせ)の雰囲気(ふんいき)もいいので、休日(きゅうじつ)はついそこで読書(どくしょ)してしまいます。ただ、人気(にんき)があるため、午後(ごご)は席(せき)が空(あ)いていないことが多(おお)いです。`,`～上(うえ)に / つい～てしまう / ～ため / ～ことが多(おお)い`,`A new café opened near the station. The coffee is delicious, and the atmosphere is nice too, so on days off I end up reading there. However, because it’s popular, there are often no seats available in the afternoon.`],
+[`洗濯(せんたく)`,`洗濯物(せんたくもの)を干(ほ)しっぱなしにして、出(で)かけてしまいました。帰(かえ)り道(みち)で急(きゅう)に雨(あめ)が降(ふ)りだし、慌(あわ)てて家(いえ)に走(はし)りました。もう少(すこ)しで全部(ぜんぶ)ぬれるところでしたが、間(ま)に合(あ)ってよかったです。`,`～っぱなし / ～だす / ～ところだった / 間(ま)に合(あ)う`,`I left the laundry hanging out and went out. On the way home it suddenly started to rain, and I ran home in a panic. I almost got everything wet, but I’m glad I made it in time.`],
+[`図書館(としょかん)`,`週(しゅう)に一回(いっかい)、図書館(としょかん)で本(ほん)を借(か)りています。借(か)りた本(ほん)は二週間(にしゅうかん)以内(いない)に返(かえ)さなければなりません。読(よ)みきれないときは、期限(きげん)を延(の)ばしてもらうことができます。`,`～なければならない / ～きれない / ～てもらう / ～ことができる`,`Once a week I borrow books from the library. Borrowed books must be returned within two weeks. When I can’t finish reading, I can have the due date extended.`],
+[`贈(おく)り物(もの)`,`来月(らいげつ)は母(はは)の誕生日(たんじょうび)なので、プレゼントを何(なに)にするか迷(まよ)っています。花(はな)をあげたらどうかと姉(あね)に言(い)われましたが、毎年(まいとし)同(おな)じなので、今年(ことし)は何(なに)か違(ちが)うものをあげたいです。きっと喜(よろこ)んでくれるに違(ちが)いありません。`,`～か迷(まよ)う / ～たらどう / ～に違(ちが)いない / ～てくれる`,`Next month is my mother’s birthday, so I’m unsure what to give her. My older sister suggested I give flowers, but it’s the same every year, so I want to give something different this year. She will surely be happy.`],
+[`スマホの故障(こしょう)`,`スマートフォンの画面(がめん)が急(きゅう)に真(ま)っ暗(くら)になりました。修理(しゅうり)に出(だ)すと一週間(いっしゅうかん)かかると言(い)われ、困(こま)ってしまいました。連絡(れんらく)も調(しら)べ物(もの)もできず、こんなに不便(ふべん)だとは思(おも)いませんでした。`,`～と言(い)われる / ～てしまう / ～ず / ～とは思(おも)わなかった`,`My smartphone screen suddenly went completely black. I was told repairs would take a week, and I was in trouble. Unable to contact anyone or look things up, I never thought it would be this inconvenient.`],
+[`美容院(びよういん)`,`三(さん)か月(げつ)ぶりに美容院(びよういん)へ行(い)きました。髪(かみ)を短(みじか)く切(き)ってもらったら、思(おも)ったより気分(きぶん)が軽(かる)くなりました。これからは、伸(の)びる前(まえ)に行(い)くようにしたいです。`,`～ぶり / ～てもらう / ～たら / ～より / ～ようにする`,`I went to the hair salon for the first time in three months. When I had my hair cut short, I felt lighter than expected. From now on I want to go before it grows out.`],
+[`ゴミの日(ひ)`,`ゴミの出(だ)し方(かた)は、地域(ちいき)によってルールが違(ちが)います。先月(せんげつ)、日(ひ)を間違(まちが)えてゴミを出(だ)したところ、近所(きんじょ)の人(ひと)に注意(ちゅうい)されました。それからは、カレンダーに書(か)いておくようにしています。`,`～によって / ～たところ / ～ておく / ～ようにしている`,`How to put out garbage differs by region. Last month I put the garbage out on the wrong day and was warned by a neighbor. Since then I’ve been writing it on the calendar.`],
+[`引(ひ)っ越(こ)し`,`来月(らいげつ)、駅(えき)に近(ちか)いアパートに引(ひ)っ越(こ)すことになりました。荷物(にもつ)を整理(せいり)してみると、使(つか)わない物(もの)ばかりでした。引(ひ)っ越(こ)しの日(ひ)までに、少(すこ)しずつ片付(かたづ)けていくつもりです。`,`～ことになる / ～てみると / ～ばかり / ～までに / ～ていく`,`Next month I’m moving to an apartment near the station. When I sorted my belongings, it was all things I don’t use. I plan to tidy up little by little before moving day.`],
+[`公園(こうえん)で`,`天気(てんき)がいい日曜日(にちようび)には、近(ちか)くの公園(こうえん)へ散歩(さんぽ)に行(い)きます。子供(こども)たちが遊(あそ)んでいるのを見(み)ていると、自分(じぶん)も子供(こども)に戻(もど)ったような気持(きも)ちになります。ベンチでお弁当(べんとう)を食(た)べるのが、私(わたし)の小(ちい)さな楽(たの)しみです。`,`～ているのを見(み)る / ～ような気持(きも)ちになる / ～のが楽(たの)しみ`,`On sunny Sundays I go for a walk in the nearby park. Watching children play makes me feel as if I’ve gone back to being a child. Eating a packed lunch on a bench is my little pleasure.`],
+[`節約(せつやく)`,`最近(さいきん)、お金(かね)を使(つか)いすぎているので、家計簿(かけいぼ)をつけ始(はじ)めました。毎日(まいにち)記録(きろく)するのは大変(たいへん)ですが、無駄(むだ)な買(か)い物(もの)が減(へ)ってきました。続(つづ)ければ続(つづ)けるほど、お金(かね)の使(つか)い方(かた)が上手(じょうず)になる気(き)がします。`,`～すぎる / ～始(はじ)める / ～てきた / ～ば～ほど / ～気(き)がする`,`Recently I’ve been spending too much money, so I started keeping a household ledger. Recording every day is hard, but wasteful purchases have been decreasing. I feel the longer I keep it up, the better I get at handling money.`],
+[`郵便局(ゆうびんきょく)で`,`友達(ともだち)に荷物(にもつ)を送(おく)る際(さい)に、郵便局(ゆうびんきょく)で箱(はこ)の大(おお)きさを測(はか)ってもらいました。思(おも)ったより料金(りょうきん)が高(たか)くて驚(おどろ)きましたが、送(おく)らないわけにはいきません。届(とど)くまで三日(みっか)ほどかかるそうです。`,`～際(さい)に / ～てもらう / ～わけにはいかない / ～そうだ`,`When sending a package to a friend, I had the size of the box measured at the post office. The fee was higher than I expected and I was surprised, but I can’t just not send it. It reportedly takes about three days to arrive.`],
+[`紅葉(こうよう)`,`先週(せんしゅう)、友達(ともだち)と山(やま)へ紅葉(こうよう)を見(み)に行(い)きました。山(やま)全体(ぜんたい)が赤(あか)や黄色(きいろ)に染(そ)まっていて、写真(しゃしん)を撮(と)らずにはいられませんでした。寒(さむ)かったにしては、人(ひと)がとても多(おお)かったです。`,`～に行(い)く / ～ずにはいられない / ～にしては`,`Last week I went to the mountains with a friend to see the autumn leaves. The whole mountain was dyed red and yellow, and I couldn’t help taking photos. For how cold it was, there were a great many people.`],
+[`オンライン会議(かいぎ)`,`今日(きょう)はオンラインで打(う)ち合(あ)わせがありました。話(はな)している最中(さいちゅう)に、突然(とつぜん)相手(あいて)に私(わたし)の声(こえ)が聞(き)こえなくなってしまいました。接続(せつぞく)を確認(かくにん)したら、マイクがオフになっているだけでした。`,`～最中(さいちゅう)に / ～なくなる / ～てしまう / ～ているだけ`,`I had an online meeting today. In the middle of talking, the other person suddenly couldn’t hear my voice. When I checked the connection, the microphone was just turned off.`],
+[`コンビニ`,`家(いえ)の近(ちか)くのコンビニは、二十四時間(にじゅうよじかん)開(あ)いているので便利(べんり)です。夜中(よなか)に急(きゅう)にお腹(なか)がすいたとき、よく利用(りよう)します。ただ、便利(べんり)だからといって、毎日(まいにち)行(い)きすぎるのはよくありません。`,`～からといって～ない / ～すぎる / 急(きゅう)に`,`The convenience store near my house is open 24 hours, so it’s handy. I often use it when I suddenly get hungry in the middle of the night. However, just because it’s convenient doesn’t mean going every day is a good idea.`],
+[`バスの中(なか)で`,`バスに乗(の)ったとたん、財布(さいふ)を忘(わす)れたことに気(き)づきました。運転手(うんてんしゅ)さんに事情(じじょう)を話(はな)すと、次(つぎ)の停留所(ていりゅうじょ)で降(お)りるように言(い)われました。それ以来(いらい)、出(で)かける前(まえ)に必(かなら)ず持(も)ち物(もの)を確認(かくにん)しています。`,`～たとたん / ～に気(き)づく / ～ように言(い)われる / それ以来(いらい)`,`The moment I boarded the bus, I realized I had forgotten my wallet. When I explained the situation to the driver, I was told to get off at the next stop. Since then, I always check my belongings before going out.`],
+[`うちの猫(ねこ)`,`うちの猫(ねこ)は、ご飯(はん)の時間(じかん)になると、鳴(な)きながら私(わたし)の後(あと)をついてきます。食(た)べたばかりなのに、また欲(ほ)しがることもあります。そんなところが、かわいくてしかたがありません。`,`～になると / ～たばかりなのに / ～こともある / ～てしかたがない`,`At mealtime, my cat follows me around meowing. Even though it has just eaten, it sometimes wants more again. I find that so adorable I can’t help it.`],
+[`日曜日(にちようび)の夕食(ゆうしょく)`,`日曜日(にちようび)の夜(よる)は、家族(かぞく)みんなで夕食(ゆうしょく)を作(つく)ります。私(わたし)が野菜(やさい)を切(き)って、弟(おとうと)が肉(にく)を焼(や)くことになっています。みんなで作(つく)ると、一人(ひとり)で食(た)べるよりずっとおいしく感(かん)じるものです。`,`～ことになっている / ～より / ～ものだ`,`On Sunday nights the whole family makes dinner together. I cut the vegetables, and my younger brother is supposed to grill the meat. When we cook together, food tends to taste much better than when eating alone.`],
+[`忘(わす)れ物(もの)`,`電車(でんしゃ)に傘(かさ)を忘(わす)れたまま、降(お)りてしまいました。駅(えき)の事務室(じむしつ)に問(と)い合(あ)わせたところ、傘(かさ)は見(み)つかっていると教(おし)えてくれました。親切(しんせつ)に対応(たいおう)してもらって、本当(ほんとう)に助(たす)かりました。`,`～まま / ～てしまう / ～たところ / ～てもらう`,`I got off the train leaving my umbrella behind. When I inquired at the station office, they told me my umbrella had been found. They handled it kindly, and it was a real help.`],
+[`日記(にっき)`,`去年(きょねん)から、寝(ね)る前(まえ)に日記(にっき)を書(か)いています。短(みじか)い文(ぶん)でも、毎日(まいにち)書(か)けば、自分(じぶん)の気持(きも)ちが整理(せいり)できます。読(よ)み返(かえ)してみると、忘(わす)れていたことがたくさん思(おも)い出(だ)されます。`,`～ても / ～ば / ～てみると / 思(おも)い出(だ)される`,`Since last year, I’ve been writing a diary before bed. Even with short sentences, if I write every day, I can sort out my feelings. When I reread it, I’m reminded of many things I had forgotten.`],
+[`新(あたら)しい趣味(しゅみ)`,`最近(さいきん)、水彩画(すいさいが)を習(なら)い始(はじ)めました。思(おも)ったとおりに色(いろ)が出(だ)せなくて、うまくいかないことばかりです。でも、先生(せんせい)に「練習(れんしゅう)すれば、必(かなら)ず上手(じょうず)になりますよ」と言(い)われて、やる気(き)が出(で)ました。`,`～始(はじ)める / ～とおりに / ～ことばかり / ～ば / やる気(き)が出(で)る`,`Recently I started learning watercolor painting. I can’t get the colors the way I intend, and nothing seems to go well. But when my teacher told me, “If you practice, you’ll surely get better,” I got motivated.`],
+[`レストランで`,`昨日(きのう)、友達(ともだち)と新(あたら)しいイタリアンレストランに行(い)きました。料理(りょうり)がおいしいばかりでなく、店員(てんいん)さんの対応(たいおう)もとても丁寧(ていねい)でした。人気(にんき)の店(みせ)でも、いつも満足(まんぞく)できるとは限(かぎ)りませんが、この店(みせ)はまた行(い)きたいです。`,`～ばかりでなく / ～とは限(かぎ)らない / ～ても`,`Yesterday I went to a new Italian restaurant with a friend. Not only was the food delicious, the staff’s service was also very polite. Even popular restaurants don’t always satisfy, but I want to go to this one again.`],
+[`衣替(ころもが)え`,`朝晩(あさばん)が寒(さむ)くなってきたので、衣替(ころもが)えをすることにしました。夏(なつ)の服(ふく)をしまってから、冬(ふゆ)の服(ふく)を出(だ)します。着(き)られなくなった服(ふく)は、思(おも)い切(き)って人(ひと)にあげるつもりです。`,`～てきた / ～ことにする / ～てから / ～なくなる / ～つもり`,`Mornings and evenings have turned cold, so I decided to switch my wardrobe for the season. After putting away summer clothes, I take out winter clothes. I plan to boldly give away clothes I can no longer wear.`],
+[`電車(でんしゃ)の中(なか)で`,`電車(でんしゃ)で、お年寄(としよ)りに席(せき)を譲(ゆず)ろうとしたところ、「大丈夫(だいじょうぶ)ですよ」と笑顔(えがお)で断(ことわ)られました。親切(しんせつ)のつもりでも、相手(あいて)には迷惑(めいわく)かもしれません。それでも、声(こえ)をかけること自体(じたい)は大切(たいせつ)だと思(おも)います。`,`～ようとしたところ / ～つもりでも / ～自体(じたい) / ～かもしれない`,`On the train, when I tried to offer my seat to an elderly person, I was politely declined with a smile: “I’m fine.” Even if meant kindly, it may be a bother to the other person. Still, I think speaking up itself is important.`],
+[`宅配便(たくはいびん)`,`ネットで買(か)った本(ほん)が、今日(きょう)届(とど)くことになっていました。ところが、時間(じかん)を指定(してい)し忘(わす)れたため、留守(るす)の間(あいだ)に配達(はいたつ)されてしまいました。次(つぎ)からは、受(う)け取(と)りの時間(じかん)を忘(わす)れずに選(えら)ぶようにします。`,`～ことになっている / ～忘(わす)れる / ～ため / ～ている間(あいだ)に / ～ずに / ～ようにする`,`A book I bought online was supposed to arrive today. But because I forgot to specify a time, it was delivered while I was out. From next time, I’ll make sure to choose a delivery time without forgetting.`],
+[`商店街(しょうてんがい)`,`家(いえ)の近(ちか)くの商店街(しょうてんがい)には、昔(むかし)から続(つづ)いている八百屋(やおや)や魚屋(さかなや)が並(なら)んでいます。スーパーに比(くら)べると少(すこ)し高(たか)いものの、品物(しなもの)が新鮮(しんせん)で、店(みせ)の人(ひと)との会話(かいわ)も楽(たの)しいです。買(か)い物(もの)をするたびに、おまけをもらえることもあります。`,`～に比(くら)べると / ～ものの / ～たびに / ～こともある`,`In the shopping street near my house, long-running greengrocers and fishmongers stand in a row. Though it’s a bit more expensive than the supermarket, the goods are fresh, and chatting with the shopkeepers is fun. Each time I shop, I sometimes get a freebie.`],
+[`パソコンの調子(ちょうし)`,`パソコンの動(うご)きが遅(おそ)くなって、仕事(しごと)にならなくなりました。調(しら)べてみると、使(つか)っていないファイルが多(おお)すぎたことが原因(げんいん)でした。整理(せいり)してからでないと、新(あたら)しいソフトも入(い)れられません。`,`～くなる / ～てみると / ～すぎる / ～てからでないと`,`My computer slowed down and I couldn’t get any work done. When I looked into it, the cause was having too many unused files. Unless I tidy up first, I can’t even install new software.`],
+[`誕生日(たんじょうび)パーティー`,`友達(ともだち)の誕生日(たんじょうび)パーティーで、手作(てづく)りのケーキを出(だ)させてもらいました。ケーキというより、形(かたち)が少(すこ)しくずれたお菓子(かし)でしたが、みんな笑(わら)いながら食(た)べてくれました。作(つく)りかけのとき、クリームが足(た)りなくなって焦(あせ)りました。`,`～させてもらう / ～というより / ～かけ / ～てくれる`,`At my friend’s birthday party, I was allowed to serve a homemade cake. It was less a cake than a slightly misshapen sweet, but everyone ate it, laughing. In the middle of making it, I ran out of cream and panicked.`],
+[`お風呂(ふろ)`,`寒(さむ)い日(ひ)は、お風呂(ふろ)にゆっくり入(はい)るのが一番(いちばん)のぜいたくです。三十分(さんじゅっぷん)くらい湯(ゆ)につかっていると、一日(いちにち)の疲(つか)れが取(と)れます。ただし、長(なが)く入(はい)りすぎると、のぼせてしまうので気(き)をつけています。`,`～のが一番(いちばん) / ～くらい / ～すぎる / ～てしまう / 気(き)をつける`,`On cold days, soaking slowly in the bath is the greatest luxury. After about thirty minutes in the hot water, the day’s fatigue goes away. However, if I stay in too long I get lightheaded, so I’m careful.`],
+[`久(ひさ)しぶりの電話(でんわ)`,`久(ひさ)しぶりに、遠(とお)くに住(す)んでいる友達(ともだち)に電話(でんわ)しました。最近(さいきん)はメッセージばかりで、声(こえ)を聞(き)くのは一年(いちねん)ぶりでした。話(はな)し始(はじ)めたら止(と)まらなくなって、気(き)がついたら二時間(にじかん)もたっていました。`,`～ばかり / ～ぶり / ～たら / ～なくなる / 気(き)がついたら`,`For the first time in a while, I called a friend who lives far away. Lately it’s been nothing but messages, and hearing their voice was the first time in a year. Once we started talking we couldn’t stop, and before I knew it two whole hours had passed.`],
+[`今年(ことし)の振(ふ)り返(かえ)り`,`もうすぐ今年(ことし)が終(お)わります。振(ふ)り返(かえ)ってみると、目標(もくひょう)の半分(はんぶん)ぐらいしか達成(たっせい)できませんでした。それでも、続(つづ)けてきたことが一(ひと)つでもあれば、それは大(おお)きな成果(せいか)だと思(おも)います。来年(らいねん)は、無理(むり)のない計画(けいかく)を立(た)てるようにしたいです。`,`～ぐらいしか～ない / ～てきた / ～ば / ～ようにする`,`The year will soon be over. Looking back, I only achieved about half of my goals. Even so, if there is even one thing I kept up, I think that’s a big achievement. Next year I’d like to make plans that aren’t overreaching.`],
+[`映画館(えいがかん)で`,`映画(えいが)が始(はじ)まったばかりなのに、後(うし)ろの人(ひと)がずっと話(はな)しています。静(しず)かにしてほしいと思(おも)いましたが、注意(ちゅうい)する勇気(ゆうき)がありませんでした。結局(けっきょく)、内容(ないよう)に集中(しゅうちゅう)できずに終(お)わりました。`,`～たばかり / ～てほしい / ～ずに`,`The movie had just begun, yet the person behind me kept talking. I wished they’d be quiet, but I lacked the courage to warn them. In the end, I finished without being able to concentrate on the content.`],
+[`道(みち)を聞(き)かれて`,`駅(えき)で、外国(がいこく)の旅行者(りょこうしゃ)に道(みち)を聞(き)かれました。うまく説明(せつめい)しようとしましたが、英語(えいご)が出(で)てきませんでした。地図(ちず)を見(み)せながら、身振(みぶ)り手振(てぶ)りで伝(つた)えることができました。`,`～ようとする / ～ながら / ～ことができる`,`At the station, a foreign traveler asked me for directions. I tried to explain well, but the English wouldn’t come out. While showing a map, I managed to get it across with gestures.`],
+[`ポイントカード`,`財布(さいふ)の中(なか)はポイントカードだらけです。整理(せいり)しようとすると、いつか使(つか)うかもしれないと思(おも)ってしまいます。ポイントがたまるほど、捨(す)てにくくなるものです。`,`～だらけ / ～ようとする / ～ほど / ～ものだ`,`My wallet is full of point cards. When I try to sort them out, I think I might use them someday. The more points pile up, the harder they are to throw away, as is the way of things.`],
+[`朝(あさ)ご飯(はん)`,`朝(あさ)ご飯(はん)は、パンとコーヒーで済(す)ませることが多(おお)いです。時間(じかん)がない日(ひ)は、食(た)べずに出(で)かけてしまいます。でも、ちゃんと食(た)べたほうが、午前中(ごぜんちゅう)は元気(げんき)に過(す)ごせます。`,`～で済(す)ませる / ～ずに / ～たほうが`,`For breakfast I often make do with bread and coffee. On days when there’s no time, I end up leaving without eating. But if I eat properly, I can spend the morning more energetically.`],
+[`休日(きゅうじつ)の昼寝(ひるね)`,`休日(きゅうじつ)の午後(ごご)、ソファに座(すわ)ったとたんに眠(ねむ)くなりました。三十分(さんじゅっぷん)だけ寝(ね)るつもりだったのに、目(め)が覚(さ)めたらもう夕方(ゆうがた)でした。せっかくの休(やす)みを無駄(むだ)にした気(き)がします。`,`～たとたん / ～つもり / ～気(き)がする`,`On a holiday afternoon, the moment I sat on the sofa I got sleepy. I meant to sleep only thirty minutes, but when I woke it was already evening. I feel I wasted a precious day off.`],
+[`お弁当(べんとう)`,`最近(さいきん)、毎朝(まいあさ)お弁当(べんとう)を作(つく)っています。冷凍食品(れいとうしょくひん)ばかり入(い)れるわけにはいかないので、野菜(やさい)のおかずも一(ひと)つ作(つく)ります。外(そと)で食(た)べるのに比(くら)べて、お金(かね)も節約(せつやく)できます。`,`～ばかり / ～わけにはいかない / ～に比(くら)べて`,`Recently I’ve been making a lunch box every morning. Since I can’t just pack frozen food, I make one vegetable side dish too. Compared with eating out, I also save money.`],
+[`銀行(ぎんこう)で`,`銀行(ぎんこう)で口座(こうざ)を作(つく)るには、身分証明書(みぶんしょうめいしょ)が必要(ひつよう)です。窓口(まどぐち)に行(い)く前(まえ)に、必要(ひつよう)な物(もの)を確認(かくにん)しておくと安心(あんしん)です。書類(しょるい)に名前(なまえ)を書(か)く際(さい)は、まちがえないように気(き)をつけてください。`,`～には / ～ておく / ～際(さい)に / ～ないように`,`To open an account at a bank, you need ID. Before going to the counter, it’s reassuring to check what you need in advance. When writing your name on the form, please be careful not to make mistakes.`],
+[`近所(きんじょ)の人(ひと)`,`エレベーターで近所(きんじょ)の人(ひと)に会(あ)ったら、あいさつをするようにしています。隣(となり)の家(いえ)の人(ひと)に対(たい)して、もっと親(した)しく話(はな)しかけたいと思(おも)っています。小(ちい)さなあいさつでも、続(つづ)ければ町(まち)の雰囲気(ふんいき)が変(か)わるかもしれません。`,`～ようにしている / ～に対(たい)して / ～かもしれない`,`When I meet a neighbor in the elevator, I make a point of greeting them. Toward the person next door, I’d like to speak more warmly. Even small greetings, if kept up, might change the town’s atmosphere.`],
+[`写真(しゃしん)の整理(せいり)`,`スマートフォンの写真(しゃしん)が一万枚(いちまんまい)を超(こ)えたので、整理(せいり)することにしました。似(に)ている写真(しゃしん)は、一枚(いちまい)だけ残(のこ)して消(け)します。消(け)しているうちに、昔(むかし)の旅行(りょこう)の写真(しゃしん)を見(み)つけて、つい見入(みい)ってしまいました。`,`～ことにする / ～うちに / つい～てしまう`,`My smartphone photos exceeded ten thousand, so I decided to organize them. For similar photos, I keep just one and delete the rest. While deleting, I found photos from an old trip and got absorbed in looking at them.`],
+[`冬(ふゆ)の準備(じゅんび)`,`寒(さむ)くなる前(まえ)に、こたつを出(だ)しました。足(あし)を入(い)れたとたん、動(うご)きたくなくなりました。今年(ことし)の冬(ふゆ)も、こたつに頼(たよ)りっぱなしになりそうです。`,`～たとたん / ～っぱなし / ～そうだ`,`Before it got cold, I took out the kotatsu. The moment I put my feet in, I didn’t want to move. This winter too, it looks like I’ll end up relying on the kotatsu all the time.`]
+];
+const G={
+'～ようにしている':[`Make an effort to / try to (as a habit)`,`毎日(まいにち)野菜(やさい)を食(た)べるようにしています。`,`I try to eat vegetables every day.`],
+'～ながら':[`While doing (two actions at once)`,`音楽(おんがく)を聞(き)きながら勉強(べんきょう)します。`,`I study while listening to music.`],
+'～てばかり':[`Doing nothing but…`,`弟(おとうと)はゲームをしてばかりいます。`,`My brother does nothing but play games.`],
+'～ようになる':[`Come to… / become able to… (change over time)`,`日本語(にほんご)が話(はな)せるようになりました。`,`I’ve become able to speak Japanese.`],
+'～てしまう':[`Do completely; do regrettably`,`財布(さいふ)を忘(わす)れてしまいました。`,`I (regrettably) forgot my wallet.`],
+'～ておく':[`Do in advance / leave as is`,`旅行(りょこう)の前(まえ)にホテルを予約(よやく)しておきます。`,`I book the hotel before the trip.`],
+'～たところ':[`When I did X, (I found that) Y`,`電話(でんわ)したところ、留守(るす)でした。`,`When I called, nobody was home.`],
+'～すぎる':[`Too much / overdo`,`昨日(きのう)は食(た)べすぎました。`,`I ate too much yesterday.`],
+'～どおりに':[`Exactly as…`,`説明(せつめい)どおりに組(く)み立(た)てました。`,`I assembled it exactly as the instructions said.`],
+'～はずなのに':[`Should be… but (contrary to expectation)`,`鍵(かぎ)をかけたはずなのに、開(あ)いていました。`,`I should have locked it, but it was open.`],
+'～せいで':[`Because of… (negative cause)`,`雨(あめ)のせいで、試合(しあい)が中止(ちゅうし)になりました。`,`The game was cancelled because of the rain.`],
+'～そうになる':[`Almost / nearly do`,`階段(かいだん)で転(ころ)びそうになりました。`,`I almost fell on the stairs.`],
+'～ようだ':[`Seems like… (based on evidence)`,`誰(だれ)もいないようです。`,`It seems nobody is here.`],
+'～ことにする':[`Decide to… (my own decision)`,`今日(きょう)から毎朝(まいあさ)走(はし)ることにします。`,`I’ve decided to run every morning from today.`],
+'～ば':[`If / when… (conditional)`,`急(いそ)げば間(ま)に合(あ)います。`,`If you hurry, you’ll make it.`],
+'～ついでに':[`While at it / on the way`,`散歩(さんぽ)のついでに、パンを買(か)いました。`,`I bought bread while out on a walk.`],
+'～らしい':[`Apparently / I hear that…`,`明日(あした)は雪(ゆき)が降(ふ)るらしいです。`,`Apparently it will snow tomorrow.`],
+'～に比べて':[`Compared to…`,`去年(きょねん)に比(くら)べて、今年(ことし)は暑(あつ)いです。`,`Compared to last year, this year is hot.`],
+'～てもらう':[`Have someone do something for me`,`友達(ともだち)に引(ひ)っ越(こ)しを手伝(てつだ)ってもらいました。`,`I had a friend help with my move.`],
+'代わりに':[`Instead of / in exchange`,`肉(にく)の代(か)わりに魚(さかな)を食(た)べます。`,`I eat fish instead of meat.`],
+'～によると～そうだ':[`According to…, I hear that…`,`友達(ともだち)の話(はなし)によると、あの店(みせ)は安(やす)いそうです。`,`According to my friend, that shop is cheap.`],
+'～ないように':[`So that (I/it) won’t…`,`忘(わす)れないように、メモしました。`,`I took a note so I wouldn’t forget.`],
+'～のも悪くない':[`…isn’t bad either`,`たまには一人(ひとり)で旅行(りょこう)するのも悪(わる)くないです。`,`Traveling alone once in a while isn’t bad either.`],
+'～ことになる':[`It has been decided that… (by circumstances)`,`来月(らいげつ)、大阪(おおさか)に転勤(てんきん)することになりました。`,`It’s been decided that I’ll transfer to Osaka next month.`],
+'～わけではない':[`It’s not that…`,`嫌(きら)いなわけではありません。`,`It’s not that I dislike it.`],
+'～のように':[`Like… / as…`,`彼(かれ)は子供(こども)のように笑(わら)います。`,`He laughs like a child.`],
+'～ことになっている':[`It’s a rule / arrangement that…`,`ここでは靴(くつ)を脱(ぬ)ぐことになっています。`,`You’re supposed to take off your shoes here.`],
+'～ば～ほど':[`The more… the more…`,`練習(れんしゅう)すればするほど、上手(じょうず)になります。`,`The more you practice, the better you get.`],
+'～か心配':[`Worried whether…`,`試験(しけん)に合格(ごうかく)できるか心配(しんぱい)です。`,`I’m worried whether I can pass the exam.`],
+'～がち':[`Tend to… (usually negative)`,`冬(ふゆ)は運動(うんどう)不足(ぶそく)になりがちです。`,`In winter I tend to get too little exercise.`],
+'～ことにしている':[`Make it a rule to…`,`寝(ね)る前(まえ)にスマホを見(み)ないことにしています。`,`I make it a rule not to look at my phone before bed.`],
+'～ようと思っていたところ':[`Was just about to… (when…)`,`電話(でんわ)しようと思(おも)っていたところに、彼(かれ)から連絡(れんらく)が来(き)ました。`,`I was just about to call when he contacted me.`],
+'～たびに':[`Every time…`,`この写真(しゃしん)を見(み)るたびに、昔(むかし)を思(おも)い出(だ)します。`,`Every time I see this photo, I remember the old days.`],
+'思い切って':[`Boldly / making up one’s mind`,`思(おも)い切(き)って会社(かいしゃ)を辞(や)めました。`,`I made up my mind and quit my job.`],
+'～つもり':[`Intend to…`,`来年(らいねん)、留学(りゅうがく)するつもりです。`,`I intend to study abroad next year.`],
+'～べきだ':[`Should… (strong)`,`約束(やくそく)は守(まも)るべきです。`,`You should keep your promises.`],
+'～うちに':[`While… / in the course of… / before it changes`,`若(わか)いうちに、いろいろな経験(けいけん)をしたいです。`,`I want to have various experiences while I’m young.`],
+'～かもしれない':[`Might… / may…`,`午後(ごご)は雨(あめ)が降(ふ)るかもしれません。`,`It might rain in the afternoon.`],
+'せっかく～のだから':[`Since I’ve gone to the trouble of…`,`せっかく来(き)たのだから、楽(たの)しんで帰(かえ)りましょう。`,`Since we came all this way, let’s enjoy ourselves.`],
+'～せいか':[`Perhaps because… (vague cause)`,`疲(つか)れているせいか、頭(あたま)が痛(いた)いです。`,`Maybe because I’m tired, my head hurts.`],
+'なかなか～ない':[`Not easily / takes a long time`,`バスがなかなか来(き)ません。`,`The bus just won’t come.`],
+'～ないようにする':[`Make an effort not to…`,`夜(よる)は食(た)べすぎないようにします。`,`I try not to overeat at night.`],
+'～おかげで':[`Thanks to… (positive cause)`,`先生(せんせい)のおかげで、合格(ごうかく)できました。`,`Thanks to my teacher, I passed.`],
+'～たばかり':[`Have just done…`,`さっき起(お)きたばかりです。`,`I just woke up a moment ago.`],
+'～てほしい':[`Want someone to do…`,`もっと早(はや)く連絡(れんらく)してほしいです。`,`I want you to contact me sooner.`],
+'～ずに':[`Without doing… (= ないで)`,`朝(あさ)ご飯(はん)を食(た)べずに家(いえ)を出(で)ました。`,`I left home without eating breakfast.`],
+'～ようとする':[`Try to… / be about to…`,`寝(ね)ようとしたとき、電話(でんわ)が鳴(な)りました。`,`Just as I was about to sleep, the phone rang.`],
+'～ことができる':[`Can… / be able to…`,`ここでは無料(むりょう)でお茶(ちゃ)を飲(の)むことができます。`,`You can drink tea for free here.`],
+'～だらけ':[`Full of… (usually unwanted)`,`部屋(へや)がほこりだらけです。`,`The room is covered in dust.`],
+'～ほど':[`To the extent of… / the more…`,`涙(なみだ)が出(で)るほど笑(わら)いました。`,`I laughed so much that tears came out.`],
+'～ものだ':[`Is the way things are; tends to…`,`子供(こども)は早(はや)く大(おお)きくなるものです。`,`Children grow up quickly, as they do.`],
+'～で済ませる':[`Make do with… / get by with…`,`昼(ひる)は簡単(かんたん)にラーメンで済(す)ませました。`,`I made do with ramen for lunch.`],
+'～たほうが':[`Better to… (～たほうがいい)`,`早(はや)く寝(ね)たほうがいいですよ。`,`You’d better go to bed early.`],
+'～たとたん':[`The moment I did…`,`家(いえ)に着(つ)いたとたん、雨(あめ)が降(ふ)りだしました。`,`The moment I got home, it started to rain.`],
+'～気がする':[`Have a feeling that…`,`誰(だれ)かに見(み)られている気(き)がします。`,`I feel like someone is watching me.`],
+'～ばかり':[`Only / nothing but…`,`最近(さいきん)、忙(いそが)しいことばかりです。`,`Lately it’s been nothing but busy things.`],
+'～わけにはいかない':[`Can’t possibly… (for some reason)`,`明日(あした)は大切(たいせつ)な会議(かいぎ)なので、休(やす)むわけにはいきません。`,`Tomorrow is an important meeting, so I can’t take a day off.`],
+'～際に':[`When… / on the occasion of… (formal)`,`ご利用(りよう)の際(さい)は、カードをお持(も)ちください。`,`When using the service, please bring your card.`],
+'～には':[`In order to…`,`駅(えき)へ行(い)くには、この道(みち)が一番(いちばん)近(ちか)いです。`,`To get to the station, this road is the closest.`],
+'～に対して':[`Toward… / in contrast to…`,`お客様(きゃくさま)に対(たい)して、失礼(しつれい)なことを言(い)ってはいけません。`,`You must not say rude things to customers.`],
+'つい～てしまう':[`End up doing… without meaning to`,`甘(あま)いものを見(み)ると、つい食(た)べてしまいます。`,`When I see sweets, I end up eating them.`],
+'～っぱなし':[`Leave as is; keep doing…`,`窓(まど)を開(あ)けっぱなしで出(で)かけました。`,`I went out leaving the window open.`],
+'～そうだ':[`Looks like… (appearance)`,`このケーキはおいしそうですね。`,`This cake looks delicious.`]
+};
+const clean=s=>s.replace(/\([\u3041-\u3096]+\)/g,'');
+function gram(s){return s.split(' / ').map(x=>{const k=clean(x);return G[k]?`<button class="gp" data-k="${k}">${rb(x)}</button>`:`<span class="gp0">${rb(x)}</span>`}).join('')+'<div class="gd"></div>'}
+const rb=s=>s.replace(/([\u4e00-\u9fff]+)\(([\u3041-\u3096]+)\)/g,'<ruby>$1<rt>$2</rt></ruby>');
+let favs=[],onlyFav=false,furi=true;
+try{favs=JSON.parse(localStorage.getItem('n3fav')||'[]')}catch(e){}
+function save(){try{localStorage.setItem('n3fav',JSON.stringify(favs))}catch(e){}}
+function render(){
+const L=document.getElementById('list');
+L.className=furi?'':'noruby';
+let h='';
+D.forEach((d,i)=>{
+if(onlyFav&&!favs.includes(i))return;
+const f=favs.includes(i);
+h+=`<article><div class="top"><h2><span>${i+1}</span>${rb(d[0])}</h2><button class="star${f?' on':''}" data-i="${i}" aria-label="Favorite">${f?'★':'☆'}</button></div><p class="jp">${rb(d[1])}</p><div class="g">${gram(d[2])}</div><details><summary>English translation</summary><p>${d[3]}</p></details></article>`;
+});
+L.innerHTML=h||'<p class="empty">No favorites yet. Tap ☆ on an article.</p>';
+}
+document.getElementById('list').addEventListener('click',e=>{
+const p=e.target.closest('.gp');
+if(p){const a=p.closest('article'),d=a.querySelector('.gd'),g=G[p.dataset.k],was=p.classList.contains('on');
+a.querySelectorAll('.gp').forEach(x=>x.classList.remove('on'));
+if(was){d.innerHTML='';return}
+p.classList.add('on');d.innerHTML=`<b>${g[0]}</b><br>${rb(g[1])}<br><i>${g[2]}</i>`;return}
+const b=e.target.closest('.star');if(!b)return;
+const i=+b.dataset.i;
+favs=favs.includes(i)?favs.filter(x=>x!==i):[...favs,i];
+save();render();
+});
+document.getElementById('fu').onclick=function(){furi=!furi;this.classList.toggle('on',furi);render()};
+document.getElementById('fav').onclick=function(){onlyFav=!onlyFav;this.classList.toggle('on',onlyFav);render()};
+render();
+</script>
+</body>
+</html>
